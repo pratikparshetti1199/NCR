@@ -7,33 +7,5 @@ node('CxPlatform_SUSDAY16077') {
     stage('Checkout') {
         git(url: 'https://github.com/ncr-swt-banking/cxp-core-webapp.git', branch: '${branch}', credentialsId: 'ess-github-pat-credentials')
     }
-    
-    stage('Clover') {
-        def outputDirectory = pwd()
-        dir('parent\\plugin-configuration') {
-            bat(/mvn clean install/)
-        }
-
-        bat(/mvn clean clover2:setup test clover2:aggregate clover2:clover -Dmaven.clover.skip=false/)
-    }
-
-    stage('Bower Update') {
-        dir("cxp-element-lib/src/main/resources/META-INF/resources") {
-            bat(/bower update/)
-        }
-    }
-
-    stage('Push to Artifactory') {
-        if (env.forceDeploy || env.branch == 'develop' || env.branch == 'master') {
-            bat(/mvn clean deploy -DskipTests=true -U -X/)
-        }
-    }
-	
-    stage('Deploy Application') { 
-	    if (env.forceDeploy || env.branch == 'develop' || env.branch == 'master') {
-			// will start another job to deploy all the war files
-			build job: 'cicd_automatic_artifact_deployment', parameters: [[$class: 'StringParameterValue', name: 'UpstreamJobName', value:env.JOB_BASE_NAME]]
-        }
-    }
-    
+       
 }
