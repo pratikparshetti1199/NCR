@@ -19,7 +19,7 @@ pipelineJob('ESS/core_cxp-core-webapp-build-PR-Triggered') {
     }
 */
     definition {
-        def pipelineScript = 
+        def pipelineScript = 'https://github.com/pratikparshetti1199/NCR.git/pipeline_seed.txt'
         cps {
             script(pipelineScript)
             sandbox()
